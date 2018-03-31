@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Константин Суриков](https://up.htmlacademy.ru/javascript/13/user/598165).
-* Наставник: `Неизвестно`.
+* Наставник: [Валерий Заочный](https://htmlacademy.ru/profile/id544753).
 
 ---
 
