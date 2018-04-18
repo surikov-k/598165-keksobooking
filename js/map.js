@@ -101,7 +101,7 @@ var generateOffers = function (TotalOffers) {
 
 generateOffers(TOTAL_OFFERS);
 
-document.querySelector('.map').classList.remove('map--faded');
+
 
 var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
 var pinImg = pinTemplate.querySelector('img');
@@ -124,7 +124,7 @@ for (i = 0; i < pins.length; i++) {
   fragment.appendChild(pins[i]);
 }
 
-document.querySelector('.map__pins').appendChild(fragment);
+// document.querySelector('.map__pins').appendChild(fragment);
 
 
 var cardTemplate = document.querySelector('template').content.querySelector('.map__card');
@@ -160,4 +160,23 @@ card.querySelector('.popup__avatar').src = offers[0].author.avatar;
 
 var map = document.querySelector('.map');
 var filters = map.querySelector('.map__filters-container');
-map.insertBefore(card, filters);
+// map.insertBefore(card, filters);
+
+var adFormElements = document.querySelector('.ad-form').querySelectorAll('fieldset');
+for (i = 0; i < adFormElements.length; i++) {
+  adFormElements[i].setAttribute('disabled', 'disabled');
+}
+
+var activatePage = function () {
+  document.querySelector('.map').classList.remove('map--faded');
+  document.querySelector('.ad-form').classList.remove('ad-form--disabled');
+  for (i = 0; i < adFormElements.length; i++) {
+    adFormElements[i].removeAttribute('disabled');
+  }
+
+}
+
+var mapPinMain = document.querySelector('.map__pin--main');
+mapPinMain.addEventListener('mouseup', function () {
+  activatePage();
+});
