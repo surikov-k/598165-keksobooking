@@ -9,6 +9,7 @@ var MIN_PRICE = 1000;
 var MAX_PRICE = 1000000;
 var MIN_ROOMS = 1;
 var MAX_ROOMS = 5;
+var TOTAL_OFFERS = 8;
 
 var offers = [];
 var avatarList = [];
@@ -73,8 +74,8 @@ var generateFeatures = function () {
   return featuresArray;
 };
 
-var generateOffers = function () {
-  for (i = 0; i < 8; i++) {
+var generateOffers = function (TotalOffers) {
+  for (i = 0; i < TotalOffers; i++) {
     offers[i] = {};
     offers[i].author = {};
     offers[i].author.avatar = avatarList[i];
@@ -98,7 +99,7 @@ var generateOffers = function () {
   }
 };
 
-generateOffers();
+generateOffers(TOTAL_OFFERS);
 
 document.querySelector('.map').classList.remove('map--faded');
 
@@ -160,4 +161,3 @@ card.querySelector('.popup__avatar').src = offers[0].author.avatar;
 var map = document.querySelector('.map');
 var filters = map.querySelector('.map__filters-container');
 map.insertBefore(card, filters);
-
