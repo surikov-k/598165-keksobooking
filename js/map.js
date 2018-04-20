@@ -10,6 +10,7 @@ var MAX_PRICE = 1000000;
 var MIN_ROOMS = 1;
 var MAX_ROOMS = 5;
 var TOTAL_OFFERS = 8;
+var PIN_LEG_HEIGHT = 22;
 
 var offers = [];
 var avatarList = [];
@@ -101,8 +102,6 @@ var generateOffers = function (TotalOffers) {
 
 generateOffers(TOTAL_OFFERS);
 
-
-
 var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
 var pinImg = pinTemplate.querySelector('img');
 var deltaX = pinImg.width / 2;
@@ -124,7 +123,6 @@ for (i = 0; i < pins.length; i++) {
   fragment.appendChild(pins[i]);
 }
 
-// document.querySelector('.map__pins').appendChild(fragment);
 
 
 var cardTemplate = document.querySelector('template').content.querySelector('.map__card');
@@ -160,7 +158,8 @@ card.querySelector('.popup__avatar').src = offers[0].author.avatar;
 
 var map = document.querySelector('.map');
 var filters = map.querySelector('.map__filters-container');
-// map.insertBefore(card, filters);
+  // map.insertBefore(card, filters);
+
 
 var adFormElements = document.querySelector('.ad-form').querySelectorAll('fieldset');
 for (i = 0; i < adFormElements.length; i++) {
@@ -173,10 +172,43 @@ var activatePage = function () {
   for (i = 0; i < adFormElements.length; i++) {
     adFormElements[i].removeAttribute('disabled');
   }
+  document.querySelector('.map__pins').appendChild(fragment);
 
-}
+};
+
+
+var getCoords = function (elem) {
+  var box = elem.getBoundingClientRect();
+
+  return {
+    top: box.top + pageYOffset,
+    left: box.left + pageXOffset
+  };
+};
+
+var getPinCoords = function (pin) {
+  var mapCoords = getCoords(document.querySelector('.map__overlay'));
+  var pinCoords = getCoords(pin);
+  var pinWidth = pin.getBoundingClientRect().width;
+  var pinHeight = pin.getBoundingClientRect().height;
+
+  return {
+    x: Math.floor(pinCoords.left - mapCoords.left + pinWidth / 2),
+    y: Math.floor(pinCoords.top - mapCoords.top + pinHeight + PIN_LEG_HEIGHT)
+  };
+};
+
 
 var mapPinMain = document.querySelector('.map__pin--main');
+var addressField = document.querySelector('input[name="address"]');
+
+var fillAddressField = function (pin) {
+  var coords = getPinCoords(pin);
+  addressField.value = coords.x + ', ' + coords.y;
+};
+
+fillAddressField(mapPinMain);
+
 mapPinMain.addEventListener('mouseup', function () {
   activatePage();
 });
