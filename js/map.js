@@ -75,8 +75,8 @@ var generateFeatures = function () {
   return featuresArray;
 };
 
-var generateOffers = function (TotalOffers) {
-  for (i = 0; i < TotalOffers; i++) {
+var generateOffers = function (totalOffers) {
+  for (i = 0; i < totalOffers; i++) {
     offers[i] = {};
     offers[i].author = {};
     offers[i].author.avatar = avatarList[i];
@@ -125,8 +125,12 @@ for (i = 0; i < pins.length; i++) {
 }
 
 var renderCard = function (n) {
+  if (document.querySelector('.map__card')) {
+    document.querySelector('.map__card').remove();
+  }
   var cardTemplate = document.querySelector('template').content.querySelector('.map__card');
   var card = cardTemplate.cloneNode(true);
+  card.setAttribute('data-card-number', n);
   card.querySelector('.popup__title').textContent = offers[n].offer.title;
   card.querySelector('.popup__text--address').textContent = offers[n].offer.address;
   card.querySelector('.popup__text--price').textContent = offers[n].offer.price + ' ₽/ночь';
@@ -159,14 +163,24 @@ var renderCard = function (n) {
   var map = document.querySelector('.map');
   var filters = map.querySelector('.map__filters-container');
   map.insertBefore(card, filters);
+  var closeButton = document.querySelector('.popup__close');
+  closeButton.addEventListener('click', function () {
+    card.remove();
+  });
 };
 
-var adFormElements = document.querySelector('.ad-form').querySelectorAll('fieldset');
-for (i = 0; i < adFormElements.length; i++) {
-  adFormElements[i].setAttribute('disabled', 'disabled');
-}
+
+var disableForm = function () {
+  var adFormElements = document.querySelector('.ad-form').querySelectorAll('fieldset');
+  for (i = 0; i < adFormElements.length; i++) {
+    adFormElements[i].setAttribute('disabled', 'disabled');
+  }
+};
+
+disableForm();
 
 var activatePage = function () {
+  var adFormElements = document.querySelector('.ad-form').querySelectorAll('fieldset');
   document.querySelector('.map').classList.remove('map--faded');
   document.querySelector('.ad-form').classList.remove('ad-form--disabled');
   for (i = 0; i < adFormElements.length; i++) {
@@ -217,10 +231,7 @@ var onPinClick = function (evt) {
   if (target.parentNode.matches('.map__pin') && !target.parentNode.matches('.map__pin--main')) {
     var offerNumber = target.parentNode.getAttribute('data-pin-number');
     renderCard(offerNumber);
-    var closeButton = document.querySelector('.popup__close');
-    closeButton.addEventListener('click', function () {
-      document.querySelector('.map__card').remove();
-    });
+
   }
 };
 
