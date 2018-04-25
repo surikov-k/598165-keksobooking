@@ -237,3 +237,67 @@ var onPinClick = function (evt) {
 
 var mapPins = document.querySelector('.map__pins');
 mapPins.addEventListener('click', onPinClick);
+
+
+var priceInput = document.getElementById('price');
+
+document.getElementById('type').addEventListener('change', function (evt) {
+  if (evt.target.value === 'flat') {
+    priceInput.placeholder = '1000';
+    priceInput.min = 1000;
+  } else
+  if (evt.target.value === 'bungalo') {
+    priceInput.placeholder = '0';
+    priceInput.min = 0;
+  } else
+  if (evt.target.value === 'house') {
+    priceInput.placeholder = '5000';
+    priceInput.min = 5000;
+  } else
+  if (evt.target.value === 'palace') {
+    priceInput.placeholder = '10000';
+    priceInput.min = 10000;
+  }
+});
+
+document.getElementById('timein').addEventListener('change', function (evt) {
+    document.getElementById('timeout').value = evt.target.value;
+});
+
+document.getElementById('timeout').addEventListener('change', function (evt) {
+    document.getElementById('timein').value = evt.target.value;
+});
+
+var capacitySelect = document.getElementById('capacity');
+var roomNumberSelect = document.getElementById('room_number');
+
+var checkCapacitySelectValidity = function () {
+  var rooms = roomNumberSelect.value;
+  var capacity = capacitySelect.value;
+
+  if (rooms === '1' && capacity !== '1') {
+    capacitySelect.setCustomValidity('Число гостей — 1');
+    console.log('1');
+  } else
+  if (rooms === '2' &&
+      !(capacity === '1' || capacity ==='2')) {
+    capacitySelect.setCustomValidity('Число гостей — 1 или 2');
+  console.log('2');
+  } else
+  if (rooms === '3' &&
+      !(capacity === '1' || capacity ==='2' || capacity ==='3')) {
+    capacitySelect.setCustomValidity('Число гостей — 1 или 2 или 3');
+  console.log('3');
+  } else
+  if (rooms === '100' && capacity !== '0') {
+    capacitySelect.setCustomValidity('Число гостей — 0');
+    console.log('4');
+  } else
+  {
+    capacitySelect.setCustomValidity('');
+  }
+};
+
+var submit = document.querySelector('.ad-form__submit');
+
+submit.addEventListener('click', checkCapacitySelectValidity);
