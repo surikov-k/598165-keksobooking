@@ -240,8 +240,8 @@ mapPins.addEventListener('click', onPinClick);
 
 
 var priceInput = document.getElementById('price');
-
-document.getElementById('type').addEventListener('change', function (evt) {
+var typeSelect = document.getElementById('type');
+typeSelect.addEventListener('change', function (evt) {
   if (evt.target.value === 'flat') {
     priceInput.placeholder = '1000';
     priceInput.min = 1000;
@@ -260,12 +260,13 @@ document.getElementById('type').addEventListener('change', function (evt) {
   }
 });
 
-document.getElementById('timein').addEventListener('change', function (evt) {
-    document.getElementById('timeout').value = evt.target.value;
+var timeInSelect = document.getElementById('timein');
+var timeOutSelect = document.getElementById('timeout');
+timeInSelect .addEventListener('change', function (evt) {
+  timeOutSelect.value = evt.target.value;
 });
-
-document.getElementById('timeout').addEventListener('change', function (evt) {
-    document.getElementById('timein').value = evt.target.value;
+timeOutSelect.addEventListener('change', function (evt) {
+  timeInSelect.value = evt.target.value;
 });
 
 var capacitySelect = document.getElementById('capacity');
@@ -276,24 +277,19 @@ var checkCapacitySelectValidity = function () {
   var capacity = capacitySelect.value;
 
   if (rooms === '1' && capacity !== '1') {
-    capacitySelect.setCustomValidity('Число гостей — 1');
-    console.log('1');
+    capacitySelect.setCustomValidity('Число гостей не больше одного');
   } else
   if (rooms === '2' &&
-      !(capacity === '1' || capacity ==='2')) {
-    capacitySelect.setCustomValidity('Число гостей — 1 или 2');
-  console.log('2');
+      !(capacity === '1' || capacity === '2')) {
+    capacitySelect.setCustomValidity('Число гостей не больше двух');
   } else
   if (rooms === '3' &&
-      !(capacity === '1' || capacity ==='2' || capacity ==='3')) {
-    capacitySelect.setCustomValidity('Число гостей — 1 или 2 или 3');
-  console.log('3');
+      !(capacity === '1' || capacity === '2' || capacity === '3')) {
+    capacitySelect.setCustomValidity('Число гостей не больше трех');
   } else
   if (rooms === '100' && capacity !== '0') {
-    capacitySelect.setCustomValidity('Число гостей — 0');
-    console.log('4');
-  } else
-  {
+    capacitySelect.setCustomValidity('Без гостей');
+  } else {
     capacitySelect.setCustomValidity('');
   }
 };
