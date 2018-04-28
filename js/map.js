@@ -4,6 +4,8 @@ var PHOTOS_IMG_URL = 'http://o0.github.io/assets/images/tokyo/hotel';
 var MIN_X = 300;
 var MAX_X = 900;
 var MIN_Y = 150;
+var MAP_MAX_X = 1200;
+var MAP_MAX_Y = 750;
 var MAX_Y = 500;
 var MIN_PRICE = 1000;
 var MAX_PRICE = 1000000;
@@ -199,15 +201,23 @@ var getCoords = function (elem) {
   };
 };
 
+var getPinDimension = function (pin) {
+  var pinDimension = {
+    width: pin.getBoundingClientRect().width,
+    height: pin.getBoundingClientRect().height,
+    borderWidth: parseInt(window.getComputedStyle(pin.querySelector('img')).getPropertyValue('border-top-width'), 10)
+  };
+  return pinDimension;
+};
+
 var getPinCoords = function (pin) {
   var mapCoords = getCoords(document.querySelector('.map__overlay'));
   var pinCoords = getCoords(pin);
-  var pinWidth = pin.getBoundingClientRect().width;
-  var pinHeight = pin.getBoundingClientRect().height;
+  var pinDimension = getPinDimension(pin);
 
   return {
-    x: Math.floor(pinCoords.left - mapCoords.left + pinWidth / 2),
-    y: Math.floor(pinCoords.top - mapCoords.top + pinHeight + PIN_LEG_HEIGHT)
+    x: Math.floor(pinCoords.left - mapCoords.left + pinDimension.width / 2),
+    y: Math.floor(pinCoords.top - mapCoords.top + pinDimension.height - pinDimension.borderWidth * 2 + PIN_LEG_HEIGHT)
   };
 };
 
@@ -221,6 +231,63 @@ var fillAddressField = function (pin) {
 };
 
 fillAddressField(mapPinMain);
+
+mapPinMain.addEventListener('mousedown', function (evt) {
+
+  evt.preventDefault();
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var onMouseMove = function (moveEvt) {
+
+    moveEvt.preventDefault();
+
+    fillAddressField(mapPinMain);
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    if (getPinCoords(mapPinMain).x < 0) {
+      mapPinMain.style.left = 0 - getPinDimension(mapPinMain).width / 2 + 'px';
+    } else
+    if (getPinCoords(mapPinMain).x > MAP_MAX_X) {
+      mapPinMain.style.left = MAP_MAX_X - getPinDimension(mapPinMain).width / 2 + 'px';
+    } else {
+      mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+    }
+
+    if (getCoords(mapPinMain).top < 0) {
+      mapPinMain.style.top = 0 + getPinDimension(mapPinMain).borderWidth + 'px';
+    }
+
+    if (getPinCoords(mapPinMain).y > MAP_MAX_Y) {
+      mapPinMain.style.top = (MAP_MAX_Y - (getPinDimension(mapPinMain).height - getPinDimension(mapPinMain).borderWidth * 2 + PIN_LEG_HEIGHT)) + 'px';
+    } else {
+      mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
+    }
+
+
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});
 
 mapPinMain.addEventListener('mouseup', function () {
   activatePage();
